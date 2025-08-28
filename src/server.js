@@ -14,7 +14,7 @@ const startServer = async () => {
     await connectDB();
 
     app.listen(PORT, () => {
-      console.log(`🚀 Server running on https://investmentbackend-cmqd.onrender.com:${PORT}`);
+      console.log(`🚀 Server running on PORT No ${PORT}`);
     });
   } catch (error) {
     console.error("❌ Failed to start server:", error.message);
