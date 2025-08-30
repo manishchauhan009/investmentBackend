@@ -2,7 +2,7 @@ import * as commodityService from "./commodity.service.js";
 
 export const getAllCommodities = async (req, res) => {
   try {
-    const commodities = await commodityService.getCommodities();
+    const commodities = await commodityService.getCommodities(req.user._id);
     res.json(commodities);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -11,7 +11,7 @@ export const getAllCommodities = async (req, res) => {
 
 export const createCommodity = async (req, res) => {
   try {
-    const newCommodity = await commodityService.addCommodity(req.body);
+    const newCommodity = await commodityService.addCommodity(req.body, req.user._id);
     res.status(201).json(newCommodity);
   } catch (error) {
     res.status(400).json({ error: error.message });

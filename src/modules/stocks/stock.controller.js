@@ -1,10 +1,16 @@
 // modules/stocks/stock.controller.js
-import { getStocks, getStockById, addStock, updateStock, deleteStock } from "./stock.service.js";
+import {
+  getStocks,
+  getStockById,
+  addStock,
+  updateStock,
+  deleteStock,
+} from "./stock.service.js";
 
 // GET /api/stocks
 export const getAllStocks = async (req, res, next) => {
   try {
-    const stocks = await getStocks();
+    const stocks = await getStocks(req.user._id);
     res.json({ success: true, data: stocks });
   } catch (err) {
     next(err);
@@ -14,7 +20,7 @@ export const getAllStocks = async (req, res, next) => {
 // GET /api/stocks/:id
 export const getSingleStock = async (req, res, next) => {
   try {
-    const stock = await getStockById(req.params.id);
+    const stock = await getStockById(req.params.id, req.user._id);
     if (!stock) {
       return res.status(404).json({ success: false, message: "Stock not found" });
     }
@@ -27,13 +33,7 @@ export const getSingleStock = async (req, res, next) => {
 // POST /api/stocks
 export const createStock = async (req, res, next) => {
   try {
-    const { name, buyPrice, } = req.body;
-    console.log(req.body)
-    // if (!name) {
-    //   return res.status(400).json({ success: false, message: "Name and buy price are required" });
-    // }
-
-    const stock = await addStock(req.body);
+    const stock = await addStock(req.body, req.user._id);
     res.status(201).json({ success: true, data: stock });
   } catch (err) {
     next(err);
@@ -43,7 +43,7 @@ export const createStock = async (req, res, next) => {
 // PUT /api/stocks/:id
 export const editStock = async (req, res, next) => {
   try {
-    const stock = await updateStock(req.params.id, req.body);
+    const stock = await updateStock(req.params.id, req.body, req.user._id);
     if (!stock) {
       return res.status(404).json({ success: false, message: "Stock not found" });
     }
@@ -56,7 +56,7 @@ export const editStock = async (req, res, next) => {
 // DELETE /api/stocks/:id
 export const removeStock = async (req, res, next) => {
   try {
-    const deleted = await deleteStock(req.params.id);
+    const deleted = await deleteStock(req.params.id, req.user._id);
     if (!deleted) {
       return res.status(404).json({ success: false, message: "Stock not found" });
     }

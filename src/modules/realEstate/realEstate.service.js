@@ -1,31 +1,32 @@
 // modules/realEstate/realEstate.service.js
 import RealEstate from "./realEstate.model.js";
 
-// Get all properties
-export const getAllProperties = async () => {
-  return await RealEstate.find();
+// Get all properties for a user
+export const getAllProperties = async (userId) => {
+  return await RealEstate.find({ user: userId });
 };
 
-// Get property by ID
-export const getPropertyById = async (id) => {
-  return await RealEstate.findById(id);
+// Get single property for a user
+export const getPropertyById = async (id, userId) => {
+  return await RealEstate.findOne({ _id: id, user: userId });
 };
 
-// Add a property
-export const addProperty = async (propertyData) => {
-  const property = new RealEstate(propertyData);
+// Add a property (force attach logged-in user)
+export const addProperty = async (propertyData, userId) => {
+  const property = new RealEstate({ ...propertyData, user: userId });
   return await property.save();
 };
 
-// Update property
-export const updateProperty = async (id, updatedData) => {
-  return await RealEstate.findByIdAndUpdate(id, updatedData, {
-    new: true,
-    runValidators: true,
-  });
+// Update property (only if it belongs to the user)
+export const updateProperty = async (id, updatedData, userId) => {
+  return await RealEstate.findOneAndUpdate(
+    { _id: id, user: userId },
+    updatedData,
+    { new: true, runValidators: true }
+  );
 };
 
-// Delete property
-export const deleteProperty = async (id) => {
-  return await RealEstate.findByIdAndDelete(id);
+// Delete property (only if it belongs to the user)
+export const deleteProperty = async (id, userId) => {
+  return await RealEstate.findOneAndDelete({ _id: id, user: userId });
 };

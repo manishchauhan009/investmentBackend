@@ -1,4 +1,3 @@
-// modules/realEstate/realEstate.routes.js
 import express from "express";
 import {
   getAllProperties,
@@ -7,13 +6,14 @@ import {
   updateProperty,
   deleteProperty,
 } from "./realEstate.controller.js";
+import { protect } from "../../middlewares/protect.js";
 
 const router = express.Router();
 
-router.get("/", getAllProperties);
-router.get("/:id", getPropertyById);
-router.post("/", addProperty);
-router.put("/:id", updateProperty);
-router.delete("/:id", deleteProperty);
+router.get("/", protect, getAllProperties);
+router.get("/:id", protect, getPropertyById);
+router.post("/", protect, addProperty);
+router.put("/:id", protect, updateProperty);
+router.delete("/:id", protect, deleteProperty);
 
 export default router;

@@ -1,8 +1,8 @@
 import { Business } from "./business.model.js";
 
-// Get all businesses
-export const getBusinesses = async () => {
-  return await Business.find();
+// Get all businesses (only for logged-in user)
+export const getBusinesses = async (filter) => {
+  return await Business.find(filter);
 };
 
 // Add new business
@@ -11,12 +11,16 @@ export const addBusiness = async (data) => {
   return await newBusiness.save();
 };
 
-// Update business
-export const updateBusiness = async (id, data) => {
-  return await Business.findByIdAndUpdate(id, data, { new: true });
+// Update business (with user ownership check)
+export const updateBusiness = async (id, data, userId) => {
+  return await Business.findOneAndUpdate(
+    { _id: id, user: userId }, // ✅ check user ownership
+    data,
+    { new: true }
+  );
 };
 
-// Delete business
-export const deleteBusiness = async (id) => {
-  return await Business.findByIdAndDelete(id);
+// Delete business (with user ownership check)
+export const deleteBusiness = async (id, userId) => {
+  return await Business.findOneAndDelete({ _id: id, user: userId });
 };

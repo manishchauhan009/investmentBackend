@@ -5,12 +5,14 @@ import {
   editCommodity,
   removeCommodity,
 } from "./commodity.controller.js";
+import { protect } from "../../middlewares/protect.js";
 
 const router = express.Router();
 
-router.get("/", getAllCommodities);
-router.post("/", createCommodity);
-router.put("/:id", editCommodity);
-router.delete("/:id", removeCommodity);
+
+router.get("/",protect, getAllCommodities);
+router.post("/",protect, createCommodity);
+router.put("/:id",protect, editCommodity);
+router.delete("/:id",protect, removeCommodity);
 
 export default router;

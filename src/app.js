@@ -1,6 +1,5 @@
 import express from "express";
 import cors from "cors";
-import morgan from "morgan";
 import helmet from "helmet";
 
 import { errorMiddleware } from "./middlewares/error.middleware.js";
@@ -22,10 +21,7 @@ app.use(cors()); // allow cross-origin requests
 app.use(express.json()); // parse JSON body
 app.use(express.urlencoded({ extended: true })); // parse URL-encoded data
 
-// Logging (skip in test mode)
-if (process.env.NODE_ENV !== "test") {
-  app.use(morgan("dev"));
-}
+
 
 // --------- API Versioning ---------
 const API_PREFIX = "/api/v1";

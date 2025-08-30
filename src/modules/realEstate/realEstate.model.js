@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 
 const realEstateSchema = new mongoose.Schema(
   {
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     name: { type: String },
     location: { type: String },
     investedValue: { type: Number },

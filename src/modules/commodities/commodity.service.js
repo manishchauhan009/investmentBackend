@@ -1,22 +1,23 @@
 import { Commodity } from "./commodity.model.js";
 
 // Get all commodities
-export const getCommodities = async () => {
-  return await Commodity.find();
+export const getCommodities = async (userId) => {
+  return await Commodity.find({ user: userId });
 };
 
 // Add commodity
-export const addCommodity = async (data) => {
+export const addCommodity = async (data, userId) => {
   const { quantity, marketPrice } = data;
   const value = quantity && marketPrice ? quantity * marketPrice : 0;
 
   const newCommodity = new Commodity({
     ...data,
+    user: userId,
     value,
   });
 
   return await newCommodity.save();
-};
+};  
 
 // Update commodity
 export const updateCommodity = async (id, data) => {
