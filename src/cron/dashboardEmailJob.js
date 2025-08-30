@@ -60,16 +60,18 @@ const getUserDashboardSummary = async (userId) => {
 
 
 export const startDashboardEmailJob = () => {
-  cron.schedule("0 9 1,15 *", async () => { 
+  cron.schedule("0 9 * * *", async () => {
+
     console.log("📧 Running dashboard email job...");
+    const today = new Date()
+    if (today.getDate() % 15 == 0) {
+      try {
+        const users = await User.find({}, "email _id name");
 
-    try {
-      const users = await User.find({}, "email _id name");
+        for (const user of users) {
+          const summary = await getUserDashboardSummary(user._id);
 
-      for (const user of users) {
-        const summary = await getUserDashboardSummary(user._id);
-
-        const emailHtml = `
+          const emailHtml = `
           <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #ddd; padding: 20px; border-radius: 12px; background: #ffffff;">
             
             <!-- Header -->
@@ -144,17 +146,19 @@ export const startDashboardEmailJob = () => {
           </div>
         `;
 
-        await transporter.sendMail({
-          from: `"Shree Rimake Holdings" <${process.env.EMAIL_USER}>`,
-          to: user.email,
-          subject: "📊 Your 15-Day Investment Summary",
-          html: emailHtml,
-        });
+          await transporter.sendMail({
+            from: `"Shree Rimake Holdings" <${process.env.EMAIL_USER}>`,
+            to: user.email,
+            subject: "📊 Your 15-Day Investment Summary",
+            html: emailHtml,
+          });
 
-        console.log(`✅ Dashboard email sent to ${user.email}`);
+          console.log(`✅ Dashboard email sent to ${user.email}`);
+        }
+      } catch (err) {
+        console.error("❌ Error in dashboard cron job:", err);
       }
-    } catch (err) {
-      console.error("❌ Error in dashboard cron job:", err);
     }
+
   });
 };
