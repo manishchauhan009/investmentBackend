@@ -6,7 +6,7 @@ import { Business } from "../businesses/business.model.js";
 
 export const getDashboardStats = async (req, res) => {
   try {
-    const userId = req.user._id; // 🔑 logged-in user
+    const userId = req.user._id; // logged-in user
 
     // Fetch only current user's records
     const [realEstates, stocks, commodities, businesses] = await Promise.all([
@@ -16,7 +16,15 @@ export const getDashboardStats = async (req, res) => {
       Business.find({ user: userId }),
     ]);
 
-    // 📊 Same calculations (but scoped to this user)
+    // Counts
+    const counts = {
+      realEstate: realEstates.length,
+      stocks: stocks.length,
+      commodities: commodities.length,
+      businesses: businesses.length,
+    };
+
+    // Calculations
     const totalRealEstateInvested = realEstates.reduce((sum, r) => sum + (r.investedValue || 0), 0);
     const totalRealEstateCurrent = realEstates.reduce((sum, r) => sum + (r.currentValue || 0), 0);
     const realEstateROI = totalRealEstateInvested > 0
@@ -48,6 +56,7 @@ export const getDashboardStats = async (req, res) => {
     res.status(200).json({
       success: true,
       data: {
+        counts, // Added counts
         totals: {
           realEstate: { invested: totalRealEstateInvested, current: totalRealEstateCurrent, roi: realEstateROI },
           stocks: { invested: totalStockInvested, current: totalStockCurrent, roi: stockROI },
@@ -56,10 +65,10 @@ export const getDashboardStats = async (req, res) => {
         },
         portfolio: { invested: totalInvested, current: totalCurrent, roi: overallROI },
         breakdown: [
-          { category: "Real Estate", invested: totalRealEstateInvested, current: totalRealEstateCurrent },
-          { category: "Stocks", invested: totalStockInvested, current: totalStockCurrent },
-          { category: "Commodities", invested: totalCommodityInvested, current: totalCommodityCurrent },
-          { category: "Businesses", valuation: totalBusinessValuation },
+          { category: "Real Estate", invested: totalRealEstateInvested, current: totalRealEstateCurrent, count: realEstates.length },
+          { category: "Stocks", invested: totalStockInvested, current: totalStockCurrent, count: stocks.length },
+          { category: "Commodities", invested: totalCommodityInvested, current: totalCommodityCurrent, count: commodities.length },
+          { category: "Businesses", valuation: totalBusinessValuation, count: businesses.length },
         ],
       },
     });
