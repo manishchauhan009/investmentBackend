@@ -17,6 +17,9 @@ const transporter = nodemailer.createTransport({
 
 
 export const sendOTPEmail = async (to, otp) => {
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    throw new Error("SMTP credentials missing");
+  }
   try {
     await transporter.sendMail({
       from: `"Shree Rimake Holdings" <${process.env.EMAIL_USER}>`,
