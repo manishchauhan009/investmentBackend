@@ -5,12 +5,16 @@ dotenv.config();
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 465,
-  secure: true, // true for 465, false for 587
+  secure: true,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
+  // Add timeout options
+  connectionTimeout: 10000, // 10 seconds
+  greetingTimeout: 10000,
 });
+
 
 export const sendOTPEmail = async (to, otp) => {
   try {
@@ -26,7 +30,7 @@ export const sendOTPEmail = async (to, otp) => {
           <div style="text-align: center; margin: 20px 0;">
             <span style="font-size: 24px; font-weight: bold; color: #2e86de; letter-spacing: 4px;">${otp}</span>
           </div>
-          <p style="font-size: 14px; color: #777;">This OTP is valid for 10 minutes. Please do not share it with anyone.</p>
+          <p style="font-size: 14px; color: #777;">This OTP is valid for 5 minutes. Please do not share it with anyone.</p>
           <hr/>
           <p style="font-size: 12px; color: #999; text-align: center;">© ${new Date().getFullYear()} Shree Rimake Holdings. All rights reserved.</p>
         </div>

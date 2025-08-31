@@ -6,9 +6,13 @@ import { Business } from "../businesses/business.model.js";
 
 export const getDashboardStats = async (req, res) => {
   try {
-    const userId = req.user._id; // logged-in user
+    if (!req.user || !req.user._id) {
+      return res.status(401).json({ success: false, message: "Unauthorized: user not found" });
+    }
 
-    // Fetch only current user's records
+    const userId = req.user._id;
+
+    // Fetch user's records
     const [realEstates, stocks, commodities, businesses] = await Promise.all([
       RealEstate.find({ user: userId }),
       Stock.find({ user: userId }),
