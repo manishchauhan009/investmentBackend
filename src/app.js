@@ -12,6 +12,7 @@ import realEstateRoutes from "./modules/realEstate/realEstate.routes.js";
 import commodityRoutes from "./modules/commodities/commodity.routes.js";
 import businessRoutes from "./modules/businesses/business.routes.js";
 import dashboardRoutes from "./modules/dashboard/dashboard.routes.js";
+import cashPileRoutes from "./modules/cashpile/cashPile.routes.js";
 
 const app = express();
 
@@ -32,6 +33,8 @@ app.use(`${API_PREFIX}/real-estate`, realEstateRoutes);
 app.use(`${API_PREFIX}/commodities`, commodityRoutes);
 app.use(`${API_PREFIX}/businesses`, businessRoutes);
 app.use(`${API_PREFIX}/dashboard`, dashboardRoutes);
+
+app.use(`${API_PREFIX}/cash-piles`, cashPileRoutes);
 
 // --------- Health Check ---------
 app.get(`${API_PREFIX}/health`, (req, res) => {
